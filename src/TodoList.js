@@ -12,6 +12,9 @@ class TodoList extends Component {
             inputValue: '123',
             list: []
         }
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleBtnClick = this.handleBtnClick.bind(this);
+        this.handleItemDelete = this.handleItemDelete.bind(this);
     }
 
     render() {
@@ -21,9 +24,9 @@ class TodoList extends Component {
                     <input
                         value={this.state.inputValue}
                         // 改变this指向
-                        onChange={this.handleInputChange.bind(this)}
+                        onChange={this.handleInputChange}
                     />
-                    <button onClick={this.handleBtnClick.bind(this)}>提交</button>
+                    <button onClick={this.handleBtnClick}>提交</button>
                 </div>
                 {/* 循环标签注释的写法 */}
                 <ul>
@@ -31,7 +34,11 @@ class TodoList extends Component {
                         this.state.list.map((item, index) => {
                             return (
                                 <div>
-                                    <TodoItem content={item}/>
+                                    <TodoItem 
+                                    content={item} 
+                                    index={index}
+                                    deleteItem={this.handleItemDelete}
+                                    />
                                 </div>
                             )
                         })
