@@ -7,6 +7,7 @@ class TodoList extends Component {
     // constructor自动执行
     constructor(props) {
         super(props);
+        
         // 定义数据,组件的状态,负责数据
         this.state = {
             inputValue: '123',
@@ -19,6 +20,7 @@ class TodoList extends Component {
 
     render() {
         return (
+            // 必须有一个根节点，使用Fragment占位符
             <Fragment>
                 <div>
                     <input
@@ -74,4 +76,5 @@ class TodoList extends Component {
     }
 }
 
+// 导出组件 
 export default TodoList;
