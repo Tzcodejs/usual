@@ -4,20 +4,22 @@ import TodoItem from './TodoItem';
 class TodoList extends Component {
 
     // 定义数据
-    // constructor自动执行
+    // constructor自动执行,优于其他代码执行
     constructor(props) {
         super(props);
-        
-        // 定义数据,组件的状态,负责数据
+
+        // 定义数据,组件的状态,负责数据的存放
         this.state = {
             inputValue: '123',
             list: []
         }
+
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleBtnClick = this.handleBtnClick.bind(this);
         this.handleItemDelete = this.handleItemDelete.bind(this);
     }
 
+    // render函数渲染dom
     render() {
         return (
             // 必须有一个根节点，使用Fragment占位符
@@ -25,7 +27,7 @@ class TodoList extends Component {
                 <div>
                     <input
                         value={this.state.inputValue}
-                        // 改变this指向
+                        // react事件绑定的语法on后面要大写，改变this指向
                         onChange={this.handleInputChange}
                     />
                     <button onClick={this.handleBtnClick}>提交</button>
@@ -36,6 +38,7 @@ class TodoList extends Component {
                         this.state.list.map((item, index) => {
                             return (
                                 <div>
+                                    {/* 子组件上既可以传递数据也可以传递方法 */}
                                     <TodoItem 
                                     content={item} 
                                     index={index}
@@ -52,11 +55,15 @@ class TodoList extends Component {
 
     // 事件函数
     handleInputChange(e) {
-        // 改变数据
+
+        // react为每个组件提供了一个方法 改变数据
         this.setState({
             inputValue: e.target.value
         })
+
     }
+
+    // 按钮点击事件
     handleBtnClick() {
         this.setState({
             // 展开运算符
@@ -64,6 +71,7 @@ class TodoList extends Component {
             inputValue: ''
         })
     }
+
     handleItemDelete(index) {
         // immutable
         // state不允许我们做任何改变，应该在拷贝中去修改
