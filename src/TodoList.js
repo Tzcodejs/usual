@@ -1,5 +1,8 @@
-import React, { Component, Fragment } from 'react';
-import TodoItem from './TodoItem';
+import React, { Component } from 'react';
+import 'antd/dist/antd.css';
+import { Input, Button, List} from 'antd';
+// import TodoItem from './TodoItem';
+import store from './store';
 
 class TodoList extends Component {
 
@@ -7,55 +10,47 @@ class TodoList extends Component {
     // constructor自动执行,优于其他代码执行
     constructor(props) {
         super(props);
-
-        // 定义数据,组件的状态,负责数据的存放
-        this.state = {
-            inputValue: '123',
-            list: []
-        }
+        this.state = store.getState();
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleBtnClick = this.handleBtnClick.bind(this);
         this.handleItemDelete = this.handleItemDelete.bind(this);
+        this.handleStoreChange = this.handleStoreChange.bind(this)
+        store.subscribe(this.handleStoreChange)
     }
 
     // render函数渲染dom
     render() {
         return (
             // 必须有一个根节点，使用Fragment占位符
-            <Fragment>
+            <div style={{marginTop:'10px', marginLeft:'10px'}}>
                 <div>
-                    <input
-                        value={this.state.inputValue}
-                        // react事件绑定的语法on后面要大写，改变this指向
-                        onChange={this.handleInputChange}
+                    <Input 
+                      value={this.state.inputValue} 
+                      placeholder='todo info' 
+                      style={{width:300, marginRight:'10px'}}
+                      onChange={this.handleInputChange}
                     />
-                    <button onClick={this.handleBtnClick}>提交</button>
+                    <Button type="primary" onClick={this.handleBtnClick}>提交</Button>
                 </div>
                 {/* 循环标签注释的写法 */}
-                <ul>
-                    {
-                        this.state.list.map((item, index) => {
-                            return (
-                                <div>
-                                    {/* 子组件上既可以传递数据也可以传递方法 */}
-                                    <TodoItem 
-                                    content={item} 
-                                    index={index}
-                                    deleteItem={this.handleItemDelete}
-                                    />
-                                </div>
-                            )
-                        })
-                    }
-                </ul>
-            </Fragment>
+                <List
+                    style={{marginTop:'10px',width:'300px'}}
+                    bordered
+                    dataSource={this.state.list}
+                    renderItem={item => (<List.Item>{item}</List.Item>)}
+                />
+            </div>
         )
     }
 
     // 事件函数
     handleInputChange(e) {
-
+        const action = {
+            type:'change_input_value',
+            value:e.target.value
+        }
+        store.dispatch(action)
         // react为每个组件提供了一个方法 改变数据
         this.setState({
             inputValue: e.target.value
@@ -63,8 +58,17 @@ class TodoList extends Component {
 
     }
 
+    handleStoreChange(){
+        // 重新取一次数据，再替换
+        this.setState(store.getState())
+    }
+
     // 按钮点击事件
     handleBtnClick() {
+        const action = {
+            type:'add_todo_item'
+        }
+        store.dispatch(action)
         this.setState({
             // 展开运算符
             list: [...this.state.list, this.state.inputValue],
