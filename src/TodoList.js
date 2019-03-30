@@ -3,6 +3,7 @@ import 'antd/dist/antd.css';
 import { Input, Button, List} from 'antd';
 // import TodoItem from './TodoItem';
 import store from './store';
+import { getInputCahngeAction, getAddItemAction, getDeleteItemAction } from './store/actionCreators'
 
 class TodoList extends Component {
 
@@ -38,7 +39,7 @@ class TodoList extends Component {
                     style={{marginTop:'10px',width:'300px'}}
                     bordered
                     dataSource={this.state.list}
-                    renderItem={item => (<List.Item>{item}</List.Item>)}
+                    renderItem={(item, index) => (<List.Item onClick={this.handleItemDelete(index)}>{item}</List.Item>)}
                 />
             </div>
         )
@@ -46,10 +47,7 @@ class TodoList extends Component {
 
     // 事件函数
     handleInputChange(e) {
-        const action = {
-            type:'change_input_value',
-            value:e.target.value
-        }
+        const action = getInputCahngeAction(e.target.value)
         store.dispatch(action)
         // react为每个组件提供了一个方法 改变数据
         this.setState({
@@ -65,26 +63,21 @@ class TodoList extends Component {
 
     // 按钮点击事件
     handleBtnClick() {
-        const action = {
-            type:'add_todo_item'
-        }
+        const action = getAddItemAction()
         store.dispatch(action)
-        this.setState({
-            // 展开运算符
-            list: [...this.state.list, this.state.inputValue],
-            inputValue: ''
-        })
     }
 
     handleItemDelete(index) {
+        const action = getDeleteItemAction(index)
+        store.dispatch(action)
         // immutable
         // state不允许我们做任何改变，应该在拷贝中去修改
-        const list = [...this.state.list];
-        // 删除数组中的某一项
-        list.splice(index, 1)
-        this.setState({
-            list: list
-        })
+        // const list = [...this.state.list];
+        // // 删除数组中的某一项
+        // list.splice(index, 1)
+        // this.setState({
+        //     list: list
+        // })
     }
 }
 
