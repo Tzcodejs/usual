@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
-import { Input, Button, List} from 'antd';
+
 // import TodoItem from './TodoItem';
 import store from './store';
-import { getInputCahngeAction, getAddItemAction, getDeleteItemAction } from './store/actionCreators'
+import { getInputCahngeAction, getAddItemAction, getDeleteItemAction, initListAction } from './store/actionCreators'
+import TodoListUI from './TodoListUI'
+import axios from 'axios'
 
 class TodoList extends Component {
 
@@ -23,26 +25,21 @@ class TodoList extends Component {
     // render函数渲染dom
     render() {
         return (
-            // 必须有一个根节点，使用Fragment占位符
-            <div style={{marginTop:'10px', marginLeft:'10px'}}>
-                <div>
-                    <Input 
-                      value={this.state.inputValue} 
-                      placeholder='todo info' 
-                      style={{width:300, marginRight:'10px'}}
-                      onChange={this.handleInputChange}
-                    />
-                    <Button type="primary" onClick={this.handleBtnClick}>提交</Button>
-                </div>
-                {/* 循环标签注释的写法 */}
-                <List
-                    style={{marginTop:'10px',width:'300px'}}
-                    bordered
-                    dataSource={this.state.list}
-                    renderItem={(item, index) => (<List.Item onClick={this.handleItemDelete(index)}>{item}</List.Item>)}
-                />
-            </div>
+            <TodoListUI 
+                inputValue={this.state.inputValue}
+                list={this.state.list}
+                handleInputChange={this.handleInputChange}
+                handleBtnClick={this.handleBtnClick}
+            />
         )
+    }
+
+    componentDidMount(){
+        axios.get('/list.json').then((res) => {
+            const data = res.data
+            const action = initListAction(data)
+            store.dispatch(action)
+        })
     }
 
     // 事件函数
